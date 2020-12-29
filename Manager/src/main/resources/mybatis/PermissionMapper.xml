@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.atcrowdfunding.dao.PermissionDao">
+
+
+    <!--void insertPermission(Permission permission);-->
+    <insert id="insertPermission">
+        insert into t_permission(
+        `name`,pid,url
+        ) value(#{name},#{pid},#{url})
+    </insert>
+
+    <!--void updatePermission(Permission permission);-->
+    <update id="updatePermission">
+        update t_permission set `name` = #{name}, url = #{url} where id = #{id}
+    </update>
+
+    <!--void insertEmployeePermission(HashMap<String, Serializable> hashMap);-->
+    <insert id="insertEmployeePermission">
+        insert into t_employee_permission(employee_id, permission_id) values
+        <foreach collection="permissionids" item="permissionid" separator=",">
+            (#{employeeid}, #{permissionid})
+        </foreach>
+    </insert>
+
+    <!--List<Permission> selectPermissionByEmployee(Employee emp);-->
+    <select id="selectPermissionByEmployee" resultType="org.atcrowdfunding.bean.Permission">
+        select
+            *
+        from t_permission
+            where id in (
+                select
+                    permission_id
+                from t_role_permission
+                    where role_id in (
+                        select
+                            rid
+                        from tb_employee_role
+                            where eid = #{id}
+                    )
+            )
+    </select>
+</mapper>

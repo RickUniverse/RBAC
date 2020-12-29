@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.atcrowdfunding.dao.EmployeeDao">
+
+    <!--void insert(Employee employee);-->
+    <insert id="insert">
+        insert into tb_employee(last_name,email,createtime) values(#{lastName},#{email},#{createtime})
+    </insert>
+
+    <!--void insertEmployeeRole(HashMap<String, Integer[]> roleids);-->
+    <insert id="insertEmployeeRole">
+        insert into tb_employee_role(eid,rid) values
+        <foreach collection="roleids.roleids" item="roleid" separator=",">
+            (#{eid},#{roleid})
+        </foreach>
+    </insert>
+
+    <!--void deleteEmployeeRole(HashMap<String, Integer[]> roleids);-->
+    <delete id="deleteEmployeeRole">
+        delete from tb_employee_role where eid = #{eid}
+        <foreach collection="roleids.roleids"
+                 item="roleid"
+                 open="and rid in ("
+                 close=")"
+                 separator=",">
+            #{roleid}
+        </foreach>
+    </delete>
+
+
+    <!--void updateEmployeeByEmployee(Employee employee);-->
+    <update id="updateEmployeeByEmployee">
+        update tb_employee
+        set last_name = #{lastName}, email = #{email}
+        where id = #{id}
+    </update>
+
+    <!--deleteEmployeeById-->
+    <delete id="deleteEmployeeById">
+        delete from tb_employee where id = #{id}
+    </delete>
+
+    <!--void deleteEmployees(HashMap<String, Object[]> employeeIds);-->
+    <delete id="deleteEmployees">
+        delete from tb_employee where id in
+        <foreach collection="employeeIds"
+                 item="employeeId"
+                 open="("
+                 close=")"
+                 separator=",">
+            #{employeeId}
+        </foreach>
+    </delete>
+
+
+    <!--List<Employee> selectByLimit(Map<String, Integer> map);-->
+    <select id="selectByLimit" resultType="org.atcrowdfunding.bean.Employee">
+        select * from tb_employee
+         <where>
+             <if test="lastName != null">
+                 and last_name like concat('%',#{lastName},'%')
+             </if>
+         </where>
+         order by createtime desc
+         limit #{start}, #{size}
+    </select>
+
+    <!--Integer selectCountByEmployee(Map<String, String> map);-->
+    <select id="selectCountByEmployee" resultType="integer">
+        select count(*) from tb_employee
+        <where>
+            <if test="lastName != null">
+                and last_name like concat('%',#{lastName},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--Employee selectOneById(Integer id);-->
+    <select id="selectOneById" resultType="org.atcrowdfunding.bean.Employee">
+        select * from tb_employee where id = #{id}
+    </select>
+</mapper>

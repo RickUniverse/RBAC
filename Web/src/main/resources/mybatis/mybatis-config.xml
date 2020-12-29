@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!--
+        如果cache报错，要不将这个项目改为独立的项目，要不将父项目的mybatis-ehcache-1.2.1.jar包取消依赖
+    -->
+
+    <!--常用配置，也可在spring中配置-->
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!--全局配置方式设置-->
+        <!--<setting name="jdbcType" value="NULL"/>-->
+        <!--开启懒加载（延迟加载）-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="cacheEnabled" value="true"/>
+
+    </settings>
+
+    <databaseIdProvider type="DB_VENDOR">
+        <!--为不同数据库厂商起别名-->
+        <property name="SQL Server" value="sqlserver" />
+        <property name="MySQL" value="mysql" />
+        <property name="DB2" value="db2" />
+        <property name="Oracle" value="oracle" />
+    </databaseIdProvider>
+</configuration>
